@@ -64,7 +64,7 @@ val selectable: TextView.() -> Unit
 
 val String.html: CharSequence
     get() = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) Html.fromHtml(this)
-    else Html.fromHtml(this, Html.FROM_HTML_MODE_COMPACT)
+            else Html.fromHtml(this, Html.FROM_HTML_MODE_COMPACT)
 
 fun text(size: Float): TextView.() -> Unit = {
     textSize = dip(size).toFloat()
