@@ -10,6 +10,9 @@ import android.util.AttributeSet
 import android.view.animation.AnimationUtils
 import android.view.animation.GridLayoutAnimationController
 import android.view.animation.LayoutAnimationController
+import android.widget.FrameLayout
+import org.jetbrains.anko.matchParent
+import org.jetbrains.anko.wrapContent
 
 /**
  * @author: Brotandos
@@ -38,53 +41,53 @@ fun anim(resId: Int): RecyclerView.() -> Unit = {
 }
 
 
-fun RecyclerView.forEachOf (
-        items: List<*>,
-        holderView: KoatlContext<ViewGroup>.(Int) -> Unit
+fun <E> RecyclerView.forEachOf (
+        items: List<E>,
+        handleLayoutParams: View.() -> Unit = mw,
+        holderView: KoatlContext<ViewGroup>.(E, Int) -> Unit
 ): RecyclerView {
-    adapter = object : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-        override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {}
+    adapter = object : RecyclerView.Adapter<KoatlViewHolder<E>>() {
         override fun getItemCount() = items.size
-        override fun getItemViewType(position: Int) = position
-        override fun onCreateViewHolder(parent: ViewGroup, position: Int)
-                = object : RecyclerView.ViewHolder(
-                KoatlContextImpl(context, parent, false)
-                        .apply { holderView(position) }.view
-        ) {}
+
+        override fun onCreateViewHolder(parent: ViewGroup, itemViewType: Int)
+        = KoatlViewHolder(FrameLayout(parent.context), parent, holderView, handleLayoutParams)
+
+        override fun onBindViewHolder(holder: KoatlViewHolder<E>, position: Int)
+        = holder.bind(items[holder.adapterPosition], holder.adapterPosition)
     }
     return this
 }
 
 
-fun itemView (
-        holderView: KoatlContext<ViewGroup>.(Int) -> Unit,
-        itemCount: () -> Int
-) : RecyclerView.() -> Unit = {
-    adapter = object : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-        override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {}
-        override fun getItemCount() = itemCount()
-        override fun getItemViewType(position: Int) = position
-        override fun onCreateViewHolder(parent: ViewGroup, position: Int)
-                = object : RecyclerView.ViewHolder(
-                KoatlContextImpl(context, parent, false)
-                        .apply { holderView(position) }.view
-        ) {}
-    }
+fun <E> adapterFor (
+        items: List<E>,
+        handleItemViewLayoutParams: View.() -> Unit,
+        holderView: KoatlContext<ViewGroup>.(E, Int) -> Unit
+) = object : RecyclerView.Adapter<KoatlViewHolder<E>>() {
+    override fun getItemCount() = items.size
+
+    override fun onCreateViewHolder(parent: ViewGroup, itemViewType: Int)
+    = KoatlViewHolder(FrameLayout(parent.context), parent, holderView, handleItemViewLayoutParams)
+
+    override fun onBindViewHolder(holder: KoatlViewHolder<E>, position: Int)
+    = holder.bind(items[holder.adapterPosition], holder.adapterPosition)
 }
 
 
-fun adapterFor (
-        items: List<*>,
-        itemView: KoatlContext<Context>.(Int) -> Unit
-) = object : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {}
-    override fun getItemCount() = items.size
-    override fun getItemViewType(position: Int) = position
-    override fun onCreateViewHolder(parent: ViewGroup, position: Int)
-    = object : RecyclerView.ViewHolder (
-            KoatlContextImpl(parent.context, parent.context, false)
-                    .apply { itemView(position) }.view
-    ) {}
+class KoatlViewHolder<in E> (
+        private val vItem: FrameLayout,
+        private val parent: ViewGroup,
+        private val holderView: KoatlContext<ViewGroup>.(E, Int) -> Unit,
+        handleItemViewLayoutParams: View.() -> Unit
+): RecyclerView.ViewHolder(vItem) {
+    init { vItem.handleItemViewLayoutParams() }
+
+    fun bind(item: E, position: Int) {
+        vItem.layoutParams = ViewGroup.LayoutParams(matchParent, wrapContent)
+        val koatl = KoatlContextImpl(parent.context, parent, false)
+                .apply { holderView(item, position) }
+        vItem.addView(koatl.view)
+    }
 }
 
 
