@@ -11,6 +11,20 @@ import org.jetbrains.anko.custom.ankoView
  * @author: Brotandos
  * @date: 26.02.2018.
  */
+fun ViewManager.v (
+        vararg initializations: (@AnkoViewDslMarker android.view.View).() -> Unit
+): android.view.View = ankoView({ android.view.View(it) }, 0) {
+    initializations.forEach { it() }
+}
+
+fun ViewManager.v (
+        vararg initializations: (@AnkoViewDslMarker android.view.View).() -> Unit,
+        init: (@AnkoViewDslMarker android.view.View).() -> Unit
+): android.view.View = ankoView({ android.view.View(it) }, 0) {
+    initializations.forEach { it() }
+    init()
+}
+
 fun ViewManager.vLabel (
         text: CharSequence?,
         vararg initializations: (@AnkoViewDslMarker android.widget.TextView).() -> Unit

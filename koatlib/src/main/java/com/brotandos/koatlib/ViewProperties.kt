@@ -4,6 +4,7 @@ import android.graphics.drawable.Drawable
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CompoundButton
+import org.jetbrains.anko.backgroundColor
 import org.jetbrains.anko.backgroundResource
 import org.jetbrains.anko.matchParent
 import org.jetbrains.anko.wrapContent
@@ -76,6 +77,10 @@ val View.tagIndex: Int get() = tag as Int
  * */
 fun bg(res: Int): View.() -> Unit = {
     backgroundResource = res
+}
+
+fun bgColor(color: Int): View.() -> Unit = {
+    backgroundColor = color
 }
 
 /**
