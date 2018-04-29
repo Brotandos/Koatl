@@ -43,7 +43,7 @@ fun anim(resId: Int): RecyclerView.() -> Unit = {
 
 fun <E> RecyclerView.forEachOf (
         items: List<E>,
-        handleLayoutParams: View.() -> Unit = mw,
+        handleLayoutParams: ViewGroup.LayoutParams.() -> Unit = lpRow,
         holderView: KoatlContext<ViewGroup>.(E, Int) -> Unit
 ): RecyclerView {
     adapter = object : RecyclerView.Adapter<KoatlViewHolder<E>>() {
@@ -61,7 +61,7 @@ fun <E> RecyclerView.forEachOf (
 
 fun <E> adapterFor (
         items: List<E>,
-        handleItemViewLayoutParams: View.() -> Unit,
+        handleItemViewLayoutParams: ViewGroup.LayoutParams.() -> Unit,
         holderView: KoatlContext<ViewGroup>.(E, Int) -> Unit
 ) = object : RecyclerView.Adapter<KoatlViewHolder<E>>() {
     override fun getItemCount() = items.size
@@ -75,17 +75,19 @@ fun <E> adapterFor (
 
 
 class KoatlViewHolder<in E> (
-        private val vItem: FrameLayout,
+        val vItem: FrameLayout,
         private val parent: ViewGroup,
-        private val holderView: KoatlContext<ViewGroup>.(E, Int) -> Unit,
-        handleItemViewLayoutParams: View.() -> Unit
+        private val holderViewMarkup: KoatlContext<ViewGroup>.(E, Int) -> Unit,
+        handleItemViewLayoutParams: ViewGroup.LayoutParams.() -> Unit
 ): RecyclerView.ViewHolder(vItem) {
-    init { vItem.handleItemViewLayoutParams() }
+    init {
+        vItem.layoutParams = ViewGroup.LayoutParams(wrapContent, wrapContent)
+        vItem.layoutParams.handleItemViewLayoutParams()
+    }
 
     fun bind(item: E, position: Int) {
-        vItem.layoutParams = ViewGroup.LayoutParams(matchParent, wrapContent)
         val koatl = KoatlContextImpl(parent.context, parent, false)
-                .apply { holderView(item, position) }
+                .apply { holderViewMarkup(item, position) }
         vItem.addView(koatl.view)
     }
 }

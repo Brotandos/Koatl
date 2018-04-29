@@ -66,6 +66,11 @@ val mm: View.() -> Unit = {
     layoutParams = ViewGroup.LayoutParams(matchParent, matchParent)
 }
 
+val lpRow: ViewGroup.LayoutParams.() -> Unit = {
+    width = matchParent
+    height = wrapContent
+}
+
 /**
  * Advice: use this, if view is inside recyclerView and has onClickListener property.
  * TODO add use example link
