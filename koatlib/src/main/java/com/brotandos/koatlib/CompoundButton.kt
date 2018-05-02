@@ -9,3 +9,11 @@ import android.widget.CompoundButton
 fun btnRes(res: Int): CompoundButton.() -> Unit = {
     setButtonDrawable(res)
 }
+
+fun CompoundButton.setChecked() {
+    isChecked = true
+}
+
+fun CompoundButton.setUnchecked() {
+    isChecked = false
+}

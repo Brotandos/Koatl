@@ -10,7 +10,7 @@ import android.view.animation.Animation
  * @date: 22.02.2018.
  */
 fun ViewGroup.createView(init: KoatlContext<ViewGroup>.() -> Unit)
-        = com.brotandos.koatlib.KoatlContextImpl(context, this, false).apply(init).view
+= KoatlContextImpl(context, this, false).apply(init).view
 
 
 inline operator fun <T: View> T.times(block: T.() -> Unit): T {

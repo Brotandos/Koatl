@@ -3,6 +3,7 @@ package com.brotandos.koatlib
 import android.content.Context
 import android.support.design.widget.NavigationView
 import android.support.v4.content.res.ResourcesCompat
+import android.view.View
 import android.view.animation.Animation
 import android.widget.*
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx
@@ -64,15 +65,21 @@ fun AlertBuilder<*>.customKoatlView(dsl: KoatlContext<Context>.() -> Unit) {
     customView = ctx.KUI(dsl)
 }
 
+/**
+ * Advice: use this, if view is inside recyclerView and has onClickListener property.
+ * TODO add use example link
+ * */
+val View.tagIndex: Int get() = tag as Int
 
-val Int.selected: BottomNavigationViewEx.() -> Unit
-    get() = {
-        selectedItemId = this@selected
-    }
 
-val stretch: TableLayout.() -> Unit
-    get() = { isStretchAllColumns = true }
+fun View.setVisible() {
+    visibility = View.VISIBLE
+}
 
-val Float.weightSum: TableRow.() -> Unit get() = {
-    weightSum = this@weightSum
+fun View.setInvisiblle() {
+    visibility = View.INVISIBLE
+}
+
+fun View.hide() {
+    visibility = View.GONE
 }

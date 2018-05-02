@@ -29,14 +29,14 @@ val vertical: LinearLayout.() -> Unit = {
     orientation = LinearLayout.VERTICAL
 }
 
-fun <T: View> T.llp(vararg inits: LinearLayout.LayoutParams.() -> Unit) : T {
+fun <T: View> T.linearLayoutParams(vararg inits: LinearLayout.LayoutParams.() -> Unit) : T {
     layoutParams = LinearLayout.LayoutParams(wrapContent, wrapContent).apply {
         for (init in inits) init()
     }
     return this
 }
 
-fun <T: View> T.llp (
+fun <T: View> T.linearLayoutParams (
         vararg inits: LinearLayout.LayoutParams.() -> Unit,
         additionalInit: LinearLayout.LayoutParams.() -> Unit
 ) : T {

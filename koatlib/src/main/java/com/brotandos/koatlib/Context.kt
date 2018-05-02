@@ -1,16 +1,18 @@
 package com.brotandos.koatlib
 
 import android.content.Context
+import android.graphics.drawable.Drawable
 import android.net.ConnectivityManager
 import android.support.v7.widget.LinearLayoutManager
 import android.util.TypedValue
+import android.view.View
+import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.view.animation.LayoutAnimationController
 import android.widget.ArrayAdapter
+import android.widget.CompoundButton
 import io.reactivex.Single
-import org.jetbrains.anko.AnkoContext
-import org.jetbrains.anko.AnkoContextImpl
-import org.jetbrains.anko.dip
+import org.jetbrains.anko.*
 import retrofit2.Call
 
 /**
@@ -60,38 +62,4 @@ fun Context.llManager() = LinearLayoutManager(this)
 fun <E> Context.spinnerDropdownAdapter(items: List<E>)
         = ArrayAdapter<E>(this, R.layout.support_simple_spinner_dropdown_item, items).apply {
     setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item)
-}
-
-interface KoatlContext<out T> : AnkoContext<T> {
-    val Int.dp: Int get() = ctx.dip(this)
-
-    fun <T> T.createKoatlContext (
-            ctx: Context,
-            init: KoatlContext<T>.() -> Unit,
-            setContentView: Boolean = false
-    ) : KoatlContext<T> {
-        val dsl = KoatlContextImpl(ctx, this, setContentView)
-        dsl.init()
-        return dsl
-    }
-}
-
-open class KoatlContextImpl<T> (
-        override val ctx: Context,
-        override val owner: T,
-        setContentView: Boolean
-) : AnkoContextImpl<T>(ctx, owner, setContentView), KoatlContext<T>
-
-inline fun Context.KUI(init: KoatlContext<Context>.() -> Unit): android.view.View =
-        createKoatlContext(this, init)
-
-
-inline fun <T> createKoatlContext (
-        ctx: Context,
-        init: KoatlContext<T>.() -> Unit,
-        setContentView: Boolean = false
-): android.view.View {
-    val dsl = KoatlContextImpl(ctx, ctx, setContentView)
-    (dsl as KoatlContext<T>).init()
-    return dsl.view
 }

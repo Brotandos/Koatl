@@ -119,17 +119,83 @@ import org.jetbrains.anko.support.v4._DrawerLayout
         }
         return this
     }
+
+
+    operator fun <T: View> T.get (
+            vararg params: .LayoutParams.() -> Unit
+    ): T {
+        layoutParams = .LayoutParams(wrapContent, wrapContent).apply {
+            for (param in params) param()
+        }
+        return this
+    }
+
+    /**
+     * You will able to write functions like this (just example):
+     * `lp(row) { margin = dip(10) }` instead of this `lp(row, { margin = dip(10) })`
+     * */
+    operator fun <T: View> T.get (
+            vararg params: .LayoutParams.() -> Unit,
+            init: .LayoutParams.() -> Unit
+    ): T {
+        layoutParams = .LayoutParams(wrapContent, wrapContent).apply {
+            for (param in params) param()
+            init()
+        }
+        return this
+    }
+
+    operator fun <T: View> T.get (
+            width: Int,
+            height: Int
+    ): T = this * { layoutParams = .LayoutParams(width, height) }
+
+    operator fun <T: View> T.get (
+            width: Int,
+            height: Int,
+            vararg params: .LayoutParams.() -> Unit
+    ): T {
+        layoutParams = .LayoutParams(width, height).apply {
+            for (param in params) param()
+        }
+        return this
+    }
+
+    operator fun <T: View> T.get (
+            width: Int,
+            height: Int,
+            vararg params: .LayoutParams.() -> Unit,
+            init: .LayoutParams.() -> Unit
+    ): T {
+        layoutParams = .LayoutParams(width, height).apply {
+            for (param in params) param()
+            init()
+        }
+        return this
+    }
 */
 
 /**
  * ViewGroup extensions
  * */
+@Deprecated("Use get function instead")
 fun <T: View> T.lp(width: Int, height: Int): T {
     this.layoutParams = ViewGroup.LayoutParams(width, height)
     return this
 }
 
+@Deprecated("Use get function instead")
 fun <T: View> T.lp(init: ViewGroup.LayoutParams.() -> Unit): T {
+    this.layoutParams.init()
+    return this
+}
+
+fun <T: View> T.get(width: Int, height: Int): T {
+    this.layoutParams = ViewGroup.LayoutParams(width, height)
+    return this
+}
+
+fun <T: View> T.get(init: ViewGroup.LayoutParams.() -> Unit): T {
     this.layoutParams.init()
     return this
 }
@@ -226,6 +292,7 @@ open class KoatlFrame(ctx: Context) : _FrameLayout(ctx) {
         marginEnd = c
     }
 
+    @Deprecated("Use get instead")
     fun <T: View> T.lp(vararg params: FrameLayout.LayoutParams.() -> Unit) : T {
         layoutParams = FrameLayout.LayoutParams(wrapContent, wrapContent).apply {
             for (param in params) param()
@@ -237,11 +304,65 @@ open class KoatlFrame(ctx: Context) : _FrameLayout(ctx) {
      * You will able to write functions like this (just example):
      * `lp(row) { margin = dip(10) }` instead of this `lp(row, { margin = dip(10) })`
      * */
+    @Deprecated("Use get function instead")
     fun <T: View> T.lp (
             vararg params: FrameLayout.LayoutParams.() -> Unit,
             init: FrameLayout.LayoutParams.() -> Unit
     ): T {
         layoutParams = FrameLayout.LayoutParams(wrapContent, wrapContent).apply {
+            for (param in params) param()
+            init()
+        }
+        return this
+    }
+
+    operator fun <T: View> T.get (
+            vararg params: FrameLayout.LayoutParams.() -> Unit
+    ): T {
+        layoutParams = FrameLayout.LayoutParams(wrapContent, wrapContent).apply {
+            for (param in params) param()
+        }
+        return this
+    }
+
+    /**
+     * You will able to write functions like this (just example):
+     * `lp(row) { margin = dip(10) }` instead of this `lp(row, { margin = dip(10) })`
+     * */
+    operator fun <T: View> T.get (
+            vararg params: FrameLayout.LayoutParams.() -> Unit,
+            init: FrameLayout.LayoutParams.() -> Unit
+    ): T {
+        layoutParams = FrameLayout.LayoutParams(wrapContent, wrapContent).apply {
+            for (param in params) param()
+            init()
+        }
+        return this
+    }
+
+    operator fun <T: View> T.get (
+            width: Int,
+            height: Int
+    ): T = this * { layoutParams = FrameLayout.LayoutParams(width, height) }
+
+    operator fun <T: View> T.get (
+            width: Int,
+            height: Int,
+            vararg params: FrameLayout.LayoutParams.() -> Unit
+    ): T {
+        layoutParams = FrameLayout.LayoutParams(width, height).apply {
+            for (param in params) param()
+        }
+        return this
+    }
+
+    operator fun <T: View> T.get (
+            width: Int,
+            height: Int,
+            vararg params: FrameLayout.LayoutParams.() -> Unit,
+            init: FrameLayout.LayoutParams.() -> Unit
+    ): T {
+        layoutParams = FrameLayout.LayoutParams(width, height).apply {
             for (param in params) param()
             init()
         }
@@ -332,17 +453,13 @@ open class KoatlLinear(ctx: Context): _LinearLayout(ctx) {
         marginEnd = c
     }
 
-    fun <T: View> T.lp(vararg params: LinearLayout.LayoutParams.() -> Unit) : T {
-        layoutParams = LinearLayout.LayoutParams(wrapContent, wrapContent).apply {
-            for (param in params) param()
-        }
-        return this
+    operator fun Float.not(): LinearLayout.LayoutParams.() -> Unit = {
+        weight = this@not
     }
 
-    @Deprecated("Use Float.invoke instead")
-    fun <T: View> T.lp(weight: Float, vararg params: LinearLayout.LayoutParams.() -> Unit) : T {
+    @Deprecated("Use get function instead")
+    fun <T: View> T.lp(vararg params: LinearLayout.LayoutParams.() -> Unit) : T {
         layoutParams = LinearLayout.LayoutParams(wrapContent, wrapContent).apply {
-            this.weight = weight
             for (param in params) param()
         }
         return this
@@ -352,6 +469,7 @@ open class KoatlLinear(ctx: Context): _LinearLayout(ctx) {
      * You will able to write functions like this (just example):
      * `lp(row) { margin = dip(10) }` instead of this `lp(row, { margin = dip(10) })`
      * */
+    @Deprecated("Use get function instead")
     fun <T: View> T.lp (
             vararg params: LinearLayout.LayoutParams.() -> Unit,
             init: LinearLayout.LayoutParams.() -> Unit
@@ -363,22 +481,57 @@ open class KoatlLinear(ctx: Context): _LinearLayout(ctx) {
         return this
     }
 
-    @Deprecated("Use Float.invoke instead")
-    fun <T: View> T.lp (
-            weight: Float,
+    operator fun <T: View> T.get (
+            vararg params: LinearLayout.LayoutParams.() -> Unit
+    ): T {
+        layoutParams = LinearLayout.LayoutParams(wrapContent, wrapContent).apply {
+            for (param in params) param()
+        }
+        return this
+    }
+
+    /**
+     * You will able to write functions like this (just example):
+     * `lp(row) { margin = dip(10) }` instead of this `lp(row, { margin = dip(10) })`
+     * */
+    operator fun <T: View> T.get (
             vararg params: LinearLayout.LayoutParams.() -> Unit,
             init: LinearLayout.LayoutParams.() -> Unit
-    ) : T {
+    ): T {
         layoutParams = LinearLayout.LayoutParams(wrapContent, wrapContent).apply {
-            this.weight = weight
             for (param in params) param()
             init()
         }
         return this
     }
 
-    operator fun Float.invoke(): LinearLayout.LayoutParams.() -> Unit = {
-        weight = this@invoke
+    operator fun <T: View> T.get (
+            width: Int,
+            height: Int
+    ): T = this * { layoutParams = LinearLayout.LayoutParams(width, height) }
+
+    operator fun <T: View> T.get (
+            width: Int,
+            height: Int,
+            vararg params: LinearLayout.LayoutParams.() -> Unit
+    ): T {
+        layoutParams = LinearLayout.LayoutParams(width, height).apply {
+            for (param in params) param()
+        }
+        return this
+    }
+
+    operator fun <T: View> T.get (
+            width: Int,
+            height: Int,
+            vararg params: LinearLayout.LayoutParams.() -> Unit,
+            init: LinearLayout.LayoutParams.() -> Unit
+    ): T {
+        layoutParams = LinearLayout.LayoutParams(width, height).apply {
+            for (param in params) param()
+            init()
+        }
+        return this
     }
 }
 
@@ -434,6 +587,7 @@ open class KoatlRelative(ctx: Context) : _RelativeLayout(ctx) {
         marginEnd = c
     }
 
+    @Deprecated("Use get function instead")
     fun <T: View> T.lp(vararg params: RelativeLayout.LayoutParams.() -> Unit) : T {
         layoutParams = RelativeLayout.LayoutParams(wrapContent, wrapContent).apply {
             for (param in params) param()
@@ -441,11 +595,66 @@ open class KoatlRelative(ctx: Context) : _RelativeLayout(ctx) {
         return this
     }
 
+    @Deprecated("Use get function instead")
     fun <T: View> T.lp (
             vararg params: RelativeLayout.LayoutParams.() -> Unit,
             init: RelativeLayout.LayoutParams.() -> Unit
     ) : T {
         layoutParams = RelativeLayout.LayoutParams(wrapContent, wrapContent).apply {
+            for (param in params) param()
+            init()
+        }
+        return this
+    }
+
+
+    operator fun <T: View> T.get (
+            vararg params: RelativeLayout.LayoutParams.() -> Unit
+    ): T {
+        layoutParams = RelativeLayout.LayoutParams(wrapContent, wrapContent).apply {
+            for (param in params) param()
+        }
+        return this
+    }
+
+    /**
+     * You will able to write functions like this (just example):
+     * `lp(row) { margin = dip(10) }` instead of this `lp(row, { margin = dip(10) })`
+     * */
+    operator fun <T: View> T.get (
+            vararg params: RelativeLayout.LayoutParams.() -> Unit,
+            init: RelativeLayout.LayoutParams.() -> Unit
+    ): T {
+        layoutParams = RelativeLayout.LayoutParams(wrapContent, wrapContent).apply {
+            for (param in params) param()
+            init()
+        }
+        return this
+    }
+
+    operator fun <T: View> T.get (
+            width: Int,
+            height: Int
+    ): T = this * { layoutParams = RelativeLayout.LayoutParams(width, height) }
+
+    operator fun <T: View> T.get (
+            width: Int,
+            height: Int,
+            vararg params: RelativeLayout.LayoutParams.() -> Unit
+    ): T {
+        layoutParams = RelativeLayout.LayoutParams(width, height).apply {
+            for (param in params) param()
+        }
+        return this
+    }
+
+    operator fun <T: View> T.get (
+            width: Int,
+            height: Int,
+            vararg params: RelativeLayout.LayoutParams.() -> Unit,
+            init: RelativeLayout.LayoutParams.() -> Unit
+    ): T {
+        layoutParams = RelativeLayout.LayoutParams(width, height).apply {
             for (param in params) param()
             init()
         }
@@ -536,6 +745,7 @@ open class KoatlDrawer (ctx: Context): _DrawerLayout(ctx) {
         marginEnd = c
     }
 
+    @Deprecated("Use get function instead")
     fun <T: View> T.lp(vararg params: DrawerLayout.LayoutParams.() -> Unit) : T {
         layoutParams = DrawerLayout.LayoutParams(wrapContent, wrapContent).apply {
             for (param in params) param()
@@ -547,11 +757,66 @@ open class KoatlDrawer (ctx: Context): _DrawerLayout(ctx) {
      * You will able to write functions like this (just example):
      * `lp(row) { margin = dip(10) }` instead of this `lp(row, { margin = dip(10) })`
      * */
+    @Deprecated("Use get function instead")
     fun <T: View> T.lp (
             vararg params: DrawerLayout.LayoutParams.() -> Unit,
             init: DrawerLayout.LayoutParams.() -> Unit
     ): T {
         layoutParams = DrawerLayout.LayoutParams(wrapContent, wrapContent).apply {
+            for (param in params) param()
+            init()
+        }
+        return this
+    }
+
+
+    operator fun <T: View> T.get (
+            vararg params: DrawerLayout.LayoutParams.() -> Unit
+    ): T {
+        layoutParams = DrawerLayout.LayoutParams(wrapContent, wrapContent).apply {
+            for (param in params) param()
+        }
+        return this
+    }
+
+    /**
+     * You will able to write functions like this (just example):
+     * `lp(row) { margin = dip(10) }` instead of this `lp(row, { margin = dip(10) })`
+     * */
+    operator fun <T: View> T.get (
+            vararg params: DrawerLayout.LayoutParams.() -> Unit,
+            init: DrawerLayout.LayoutParams.() -> Unit
+    ): T {
+        layoutParams = DrawerLayout.LayoutParams(wrapContent, wrapContent).apply {
+            for (param in params) param()
+            init()
+        }
+        return this
+    }
+
+    operator fun <T: View> T.get (
+            width: Int,
+            height: Int
+    ): T = this * { layoutParams = DrawerLayout.LayoutParams(width, height) }
+
+    operator fun <T: View> T.get (
+            width: Int,
+            height: Int,
+            vararg params: DrawerLayout.LayoutParams.() -> Unit
+    ): T {
+        layoutParams = DrawerLayout.LayoutParams(width, height).apply {
+            for (param in params) param()
+        }
+        return this
+    }
+
+    operator fun <T: View> T.get (
+            width: Int,
+            height: Int,
+            vararg params: DrawerLayout.LayoutParams.() -> Unit,
+            init: DrawerLayout.LayoutParams.() -> Unit
+    ): T {
+        layoutParams = DrawerLayout.LayoutParams(width, height).apply {
             for (param in params) param()
             init()
         }
@@ -642,6 +907,7 @@ open class KoatlTable(ctx: Context) : _TableLayout(ctx) {
         marginEnd = c
     }
 
+    @Deprecated("Use get function instead")
     fun <T: View> T.lp(vararg params: TableLayout.LayoutParams.() -> Unit) : T {
         layoutParams = TableLayout.LayoutParams(wrapContent, wrapContent).apply {
             for (param in params) param()
@@ -653,6 +919,7 @@ open class KoatlTable(ctx: Context) : _TableLayout(ctx) {
      * You will able to write functions like this (just example):
      * `lp(row) { margin = dip(10) }` instead of this `lp(row, { margin = dip(10) })`
      * */
+    @Deprecated("Use get function instead")
     fun <T: View> T.lp (
             vararg params: TableLayout.LayoutParams.() -> Unit,
             init: TableLayout.LayoutParams.() -> Unit
@@ -663,6 +930,61 @@ open class KoatlTable(ctx: Context) : _TableLayout(ctx) {
         }
         return this
     }
+
+
+    operator fun <T: View> T.get (
+            vararg params: TableLayout.LayoutParams.() -> Unit
+    ): T {
+        layoutParams = TableLayout.LayoutParams(wrapContent, wrapContent).apply {
+            for (param in params) param()
+        }
+        return this
+    }
+
+    /**
+     * You will able to write functions like this (just example):
+     * `lp(row) { margin = dip(10) }` instead of this `lp(row, { margin = dip(10) })`
+     * */
+    operator fun <T: View> T.get (
+            vararg params: TableLayout.LayoutParams.() -> Unit,
+            init: TableLayout.LayoutParams.() -> Unit
+    ): T {
+        layoutParams = TableLayout.LayoutParams(wrapContent, wrapContent).apply {
+            for (param in params) param()
+            init()
+        }
+        return this
+    }
+
+    operator fun <T: View> T.get (
+            width: Int,
+            height: Int
+    ): T = this * { layoutParams = TableLayout.LayoutParams(width, height) }
+
+    operator fun <T: View> T.get (
+            width: Int,
+            height: Int,
+            vararg params: TableLayout.LayoutParams.() -> Unit
+    ): T {
+        layoutParams = TableLayout.LayoutParams(width, height).apply {
+            for (param in params) param()
+        }
+        return this
+    }
+
+    operator fun <T: View> T.get (
+            width: Int,
+            height: Int,
+            vararg params: TableLayout.LayoutParams.() -> Unit,
+            init: TableLayout.LayoutParams.() -> Unit
+    ): T {
+        layoutParams = TableLayout.LayoutParams(width, height).apply {
+            for (param in params) param()
+            init()
+        }
+        return this
+    }
+
 
     /**
      * tableRow functions
@@ -761,6 +1083,7 @@ open class KoatlTableRow(ctx: Context) : _TableRow(ctx) {
         marginEnd = c
     }
 
+    @Deprecated("Use get function instead")
     fun <T: View> T.lp(vararg params: TableRow.LayoutParams.() -> Unit) : T {
         layoutParams = TableRow.LayoutParams(wrapContent, wrapContent).apply {
             for (param in params) param()
@@ -772,11 +1095,66 @@ open class KoatlTableRow(ctx: Context) : _TableRow(ctx) {
      * You will able to write functions like this (just example):
      * `lp(row) { margin = dip(10) }` instead of this `lp(row, { margin = dip(10) })`
      * */
+    @Deprecated("Use get function instead")
     fun <T: View> T.lp (
             vararg params: TableRow.LayoutParams.() -> Unit,
             init: TableRow.LayoutParams.() -> Unit
     ): T {
         layoutParams = TableRow.LayoutParams(wrapContent, wrapContent).apply {
+            for (param in params) param()
+            init()
+        }
+        return this
+    }
+
+
+    operator fun <T: View> T.get (
+            vararg params: TableRow.LayoutParams.() -> Unit
+    ): T {
+        layoutParams = TableRow.LayoutParams(wrapContent, wrapContent).apply {
+            for (param in params) param()
+        }
+        return this
+    }
+
+    /**
+     * You will able to write functions like this (just example):
+     * `lp(row) { margin = dip(10) }` instead of this `lp(row, { margin = dip(10) })`
+     * */
+    operator fun <T: View> T.get (
+            vararg params: TableRow.LayoutParams.() -> Unit,
+            init: TableRow.LayoutParams.() -> Unit
+    ): T {
+        layoutParams = TableRow.LayoutParams(wrapContent, wrapContent).apply {
+            for (param in params) param()
+            init()
+        }
+        return this
+    }
+
+    operator fun <T: View> T.get (
+            width: Int,
+            height: Int
+    ): T = this * { layoutParams = TableRow.LayoutParams(width, height) }
+
+    operator fun <T: View> T.get (
+            width: Int,
+            height: Int,
+            vararg params: TableRow.LayoutParams.() -> Unit
+    ): T {
+        layoutParams = TableRow.LayoutParams(width, height).apply {
+            for (param in params) param()
+        }
+        return this
+    }
+
+    operator fun <T: View> T.get (
+            width: Int,
+            height: Int,
+            vararg params: TableRow.LayoutParams.() -> Unit,
+            init: TableRow.LayoutParams.() -> Unit
+    ): T {
+        layoutParams = TableRow.LayoutParams(width, height).apply {
             for (param in params) param()
             init()
         }
