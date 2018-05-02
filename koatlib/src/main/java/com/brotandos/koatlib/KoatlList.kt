@@ -43,7 +43,7 @@ fun anim(resId: Int): RecyclerView.() -> Unit = {
 
 fun <E> RecyclerView.forEachOf (
         items: List<E>,
-        handleLayoutParams: ViewGroup.LayoutParams.() -> Unit = lpRow,
+        handleLayoutParams: ViewGroup.LayoutParams.() -> Unit = row,
         holderView: KoatlContext<ViewGroup>.(E, Int) -> Unit
 ): RecyclerView {
     adapter = object : RecyclerView.Adapter<KoatlViewHolder<E>>() {
