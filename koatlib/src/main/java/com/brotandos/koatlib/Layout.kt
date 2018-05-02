@@ -190,12 +190,12 @@ fun <T: View> T.lp(init: ViewGroup.LayoutParams.() -> Unit): T {
     return this
 }
 
-fun <T: View> T.get(width: Int, height: Int): T {
+operator fun <T: View> T.get(width: Int, height: Int): T {
     this.layoutParams = ViewGroup.LayoutParams(width, height)
     return this
 }
 
-fun <T: View> T.get(init: ViewGroup.LayoutParams.() -> Unit): T {
+operator fun <T: View> T.get(init: ViewGroup.LayoutParams.() -> Unit): T {
     this.layoutParams.init()
     return this
 }

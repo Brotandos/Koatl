@@ -171,10 +171,9 @@ interface KoatlContext<out T> : AnkoContext<T> {
         setPadding(paddingLeft, c, paddingRight, c)
     }
 
-    val Int.selected: BottomNavigationViewEx.() -> Unit
-        get() = {
-            selectedItemId = this@selected
-        }
+    fun selected(selectedItemId: Int): BottomNavigationViewEx.() -> Unit = {
+         this.selectedItemId = selectedItemId
+    }
 
     val stretch: TableLayout.() -> Unit
         get() = { isStretchAllColumns = true }
