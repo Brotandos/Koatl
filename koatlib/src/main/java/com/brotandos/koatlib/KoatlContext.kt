@@ -10,15 +10,18 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.text.Html
 import android.text.InputType
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.CompoundButton
-import android.widget.TableLayout
-import android.widget.TableRow
-import android.widget.TextView
+import android.widget.*
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx
 import org.jetbrains.anko.*
+import org.jetbrains.anko.support.v4.onUiThread
+import org.jetbrains.anko.support.v4.toast
+import java.io.BufferedInputStream
+import java.net.HttpURLConnection
+import java.net.URL
 
 /**
  * @author: Brotandos
@@ -126,8 +129,8 @@ interface KoatlContext<out T> : AnkoContext<T> {
         tag = t
     }
 
-    operator fun Drawable.invoke(): View.() -> Unit = {
-        background = this@invoke
+    operator fun Drawable.unaryPlus(): View.() -> Unit = {
+        background = this@unaryPlus
     }
 
     /**
@@ -203,6 +206,37 @@ interface KoatlContext<out T> : AnkoContext<T> {
         textAlignment = View.TEXT_ALIGNMENT_TEXT_END
     }
 
+    val gText1: TextView.() -> Unit
+        get() = { gravity = Gravity.TOP or Gravity.START }
+    val gText2: TextView.() -> Unit
+        get() = { gravity = Gravity.CENTER_HORIZONTAL or Gravity.TOP }
+    val gText3: TextView.() -> Unit
+        get() = { gravity = Gravity.END or Gravity.TOP }
+    val gText4: TextView.() -> Unit
+        get() = { gravity = Gravity.CENTER_VERTICAL or Gravity.START}
+    val gText5: TextView.() -> Unit
+        get() = { gravity = Gravity.CENTER_VERTICAL or Gravity.CENTER_HORIZONTAL }
+    val gText6: TextView.() -> Unit
+        get() = { gravity = Gravity.CENTER_VERTICAL or Gravity.END }
+    val gText7: TextView.() -> Unit
+        get() = { gravity = Gravity.START or Gravity.BOTTOM }
+    val gText8: TextView.() -> Unit
+        get() = { gravity = Gravity.CENTER_HORIZONTAL or Gravity.BOTTOM }
+    val gText9: TextView.() -> Unit
+        get() = { gravity = Gravity.END or Gravity.BOTTOM }
+    val gText123: TextView.() -> Unit
+        get() = { gravity = Gravity.TOP }
+    val gText147: TextView.() -> Unit
+        get() = { gravity = Gravity.START }
+    val gText258: TextView.() -> Unit
+        get() = { gravity = Gravity.CENTER_HORIZONTAL }
+    val gText456: TextView.() -> Unit
+        get() = { gravity = Gravity.CENTER_VERTICAL }
+    val gText369: TextView.() -> Unit
+        get() = { gravity = Gravity.END }
+    val gText789: TextView.() -> Unit
+        get() = { gravity = Gravity.BOTTOM }
+
     val password: TextView.() -> Unit get() = {
         inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
     }
@@ -211,12 +245,42 @@ interface KoatlContext<out T> : AnkoContext<T> {
         inputType = InputType.TYPE_CLASS_NUMBER
     }
 
+    val floatNumeric: TextView.() -> Unit get() = {
+        inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL
+    }
+
+    val phone: TextView.() -> Unit get() = {
+        inputType = InputType.TYPE_CLASS_PHONE
+    }
+
     val bold: TextView.() -> Unit get() = {
         typeface = Typeface.DEFAULT_BOLD
     }
 
+    @Deprecated("Use Int.lined instead")
     val line: TextView.() -> Unit get() = {
         singleLine = true
+    }
+
+    val Int.lined: TextView.() -> Unit get() = {
+        when {
+            this@lined == 1 -> singleLine = true
+            this@lined > 1 -> lines = this@lined
+            else -> RuntimeException("Must be natural number")
+        }
+    }
+
+    val Int.maxLines: TextView.() -> Unit get() = {
+        when {
+            this@maxLines == 1 -> singleLine = true
+            this@maxLines > 1 -> maxLines = this@maxLines
+            else -> RuntimeException("Must be natural number")
+        }
+    }
+
+    val Int.minLines: TextView.() -> Unit get() = {
+        if (this@minLines < 1) RuntimeException("Must be natural number")
+        else minLines = this@minLines
     }
 
     val Float.sp: TextView.() -> Unit get() = {
@@ -302,6 +366,23 @@ inline fun <T> createKoatlContext (
 }
 
 
+inline fun <T> koatlContext (
+        ctx: Context,
+        owner: T,
+        setContentView: Boolean,
+        init: KoatlContext<T>.() -> Unit
+): View {
+    val dsl = KoatlContextImpl(ctx, owner, setContentView)
+    (dsl as KoatlContext<T>).init()
+    return dsl.view
+}
+
+
+interface LoadableApp {
+    val baseUrl: String
+}
+
+
 abstract class KoatlFragment : Fragment() {
     fun Fragment.KUI(init: KoatlContext<Context>.() -> Unit)
             = createKoatlContext(context!!, init)
@@ -309,4 +390,30 @@ abstract class KoatlFragment : Fragment() {
     abstract fun markup(): View
 
     override fun onCreateView(i: LayoutInflater, vg: ViewGroup?, b: Bundle?) = markup()
+}
+
+
+abstract class LoadableFragment(baseUrl: String? = null, val app: LoadableApp? = null): KoatlFragment() {
+    private val baseUrl = when {
+        baseUrl != null -> baseUrl
+        app != null -> app.baseUrl
+        else -> ""
+    }
+
+    fun String.httpGet(onPostExecute: (String) -> Unit, onError: (Exception) -> Unit, timeout: Int = 5000) {
+        doAsync {
+            with(URL(baseUrl + this@httpGet).openConnection() as HttpURLConnection) {
+                requestMethod = "GET"
+                connectTimeout = timeout
+                try {
+                    val result = BufferedInputStream(inputStream).getString()
+                    onUiThread { onPostExecute(result) }
+                } catch (e: Exception) {
+                    onError(e)
+                } finally {
+                    disconnect()
+                }
+            }
+        }
+    }
 }
