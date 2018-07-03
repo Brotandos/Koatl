@@ -7,6 +7,7 @@ import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
+import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.Fragment
 import android.text.Html
 import android.text.InputType
@@ -109,12 +110,20 @@ interface KoatlContext<out T> : AnkoContext<T> {
         setOnClickListener(this@unaryPlus)
     }
 
-    operator fun View.OnFocusChangeListener.unaryPlus(): View.() -> Unit = {
-        onFocusChangeListener = this@unaryPlus
+    operator fun CompoundButton.OnCheckedChangeListener.unaryMinus(): CompoundButton.() -> Unit = {
+        setOnCheckedChangeListener(this@unaryMinus)
     }
 
-    operator fun View.OnTouchListener.unaryPlus(): View.() -> Unit = {
-        setOnTouchListener(this@unaryPlus)
+    operator fun View.OnFocusChangeListener.unaryMinus(): View.() -> Unit = {
+        onFocusChangeListener = this@unaryMinus
+    }
+
+    operator fun View.OnTouchListener.not(): View.() -> Unit = {
+        setOnTouchListener(this@not)
+    }
+
+    operator fun BottomNavigationView.OnNavigationItemSelectedListener.invoke(): BottomNavigationView.() -> Unit = {
+        setOnNavigationItemSelectedListener(this@invoke)
     }
 
     operator fun Int.not(): View.() -> Unit = {
@@ -255,11 +264,6 @@ interface KoatlContext<out T> : AnkoContext<T> {
 
     val bold: TextView.() -> Unit get() = {
         typeface = Typeface.DEFAULT_BOLD
-    }
-
-    @Deprecated("Use Int.lined instead")
-    val line: TextView.() -> Unit get() = {
-        singleLine = true
     }
 
     val Int.lined: TextView.() -> Unit get() = {

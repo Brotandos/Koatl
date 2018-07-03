@@ -509,7 +509,7 @@ fun ViewManager.vGridList (
     additionalInit()
 }
 
-fun ViewManager.vBottomNav (
+fun ViewManager.vNavSelector (
         menuId: Int,
         init: (@AnkoViewDslMarker BottomNavigationViewEx).() -> Unit
 ) : BottomNavigationViewEx = ankoView({ BottomNavigationViewEx(it) }, 0) {
@@ -517,7 +517,7 @@ fun ViewManager.vBottomNav (
     init()
 }
 
-fun ViewManager.vBottomNav (
+fun ViewManager.vNavSelector (
         menuId: Int,
         vararg inits: (@AnkoViewDslMarker BottomNavigationViewEx).() -> Unit
 ) : BottomNavigationViewEx = ankoView({ BottomNavigationViewEx(it) }, 0) {
@@ -525,7 +525,7 @@ fun ViewManager.vBottomNav (
     inits.forEach { it() }
 }
 
-fun ViewManager.vBottomNav (
+fun ViewManager.vNavSelector (
         menuId: Int,
         vararg inits: (@AnkoViewDslMarker BottomNavigationViewEx).() -> Unit,
         init: (@AnkoViewDslMarker BottomNavigationViewEx).() -> Unit
@@ -534,6 +534,10 @@ fun ViewManager.vBottomNav (
     inits.forEach { it() }
     init()
 }
+
+fun <E> ViewManager.vDropdown (
+        items: List<E>
+) = vDropdown(items) {}
 
 fun <E> ViewManager.vDropdown (
         items: List<E>,
