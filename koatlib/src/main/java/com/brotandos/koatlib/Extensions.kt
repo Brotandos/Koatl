@@ -9,10 +9,6 @@ import android.view.animation.Animation
  * @author: Brotandos
  * @date: 22.02.2018.
  */
-fun ViewGroup.createView(init: KoatlContext<ViewGroup>.() -> Unit)
-= KoatlContextImpl(context, this, false).apply(init).view
-
-
 inline operator fun <T: View> T.times(block: T.() -> Unit): T {
     block()
     return this

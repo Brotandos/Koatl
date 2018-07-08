@@ -200,15 +200,6 @@ operator fun <T: View> T.get(init: ViewGroup.LayoutParams.() -> Unit): T {
     return this
 }
 
-inline val submissive: ViewGroup.LayoutParams.() -> Unit
-    get() = { width = wrapContent; height = wrapContent }
-inline val row: ViewGroup.LayoutParams.() -> Unit
-    get() = { width = matchParent; height = wrapContent }
-inline val column: ViewGroup.LayoutParams.() -> Unit
-    get() = { width = wrapContent; height = matchParent }
-inline val dominant: ViewGroup.LayoutParams.() -> Unit
-    get() = { width = matchParent; height = matchParent }
-
 
 open class KoatlFrame(ctx: Context) : _FrameLayout(ctx) {
     inline val g1: FrameLayout.LayoutParams.() -> Unit

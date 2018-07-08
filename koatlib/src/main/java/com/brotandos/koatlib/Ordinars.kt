@@ -36,15 +36,6 @@ fun animationListener (
     override fun onAnimationEnd(animation: Animation?) { if (onEnd != null) onEnd(animation) }
 }
 
-fun BufferedInputStream.getString() : String {
-    val bos = ByteArrayOutputStream()
-    var i = this.read()
-    while (i != -1) {
-        bos.write(i)
-        i = this.read()
-    }
-    return bos.toString()
-}
 
 inline val EditText.textVal: String get() = text.toString()
 
@@ -58,11 +49,6 @@ fun BottomNavigationViewEx.setItemStateColor(resId: Int) {
 
 operator fun <T: Adapter> AdapterView.OnItemSelectedListener.invoke(): AdapterView<T>.() -> Unit = {
     onItemSelectedListener = this@invoke
-}
-
-
-fun AlertBuilder<*>.customKoatlView(dsl: KoatlContext<Context>.() -> Unit) {
-    customView = ctx.KUI(dsl)
 }
 
 /**

@@ -1,3 +1,4 @@
+/*
 package com.brotandos.koatlib
 
 import android.content.Context
@@ -24,10 +25,12 @@ import java.io.BufferedInputStream
 import java.net.HttpURLConnection
 import java.net.URL
 
+*/
 /**
  * @author: Brotandos
  * @creation_date: 22.03.2018
- */
+ *//*
+
 interface KoatlContext<out T> : AnkoContext<T> {
     val Int.dp: Int get() = ctx.dip(this)
 
@@ -92,9 +95,11 @@ interface KoatlContext<out T> : AnkoContext<T> {
         height = wrapContent
     }
 
-    /**
+    */
+/**
      * 'bg' stands for 'background'
-     * */
+     * *//*
+
     fun bg(res: Int): View.() -> Unit = {
         backgroundResource = res
     }
@@ -103,9 +108,11 @@ interface KoatlContext<out T> : AnkoContext<T> {
         backgroundColor = color
     }
 
-    /**
+    */
+/**
      * Listeners setting functions
-     * */
+     * *//*
+
     operator fun View.OnClickListener.unaryPlus(): View.() -> Unit = {
         setOnClickListener(this@unaryPlus)
     }
@@ -142,11 +149,13 @@ interface KoatlContext<out T> : AnkoContext<T> {
         background = this@unaryPlus
     }
 
-    /**
+    */
+/**
      * Padding settings functions
      * 'p' stands for 'padding'
      * 'c' stands for 'coefficient'
-     * */
+     * *//*
+
     fun p(c: Int): View.() -> Unit = {
         setPadding(c, c, c, c)
     }
@@ -313,9 +322,11 @@ interface KoatlContext<out T> : AnkoContext<T> {
                 else Html.fromHtml(text, Html.FROM_HTML_MODE_COMPACT)
     }
 
-    /**
+    */
+/**
      * Icon setting functions
-     * */
+     * *//*
+
     fun icLeft(iconRes: Int): TextView.() -> Unit = {
         setCompoundDrawablesWithIntrinsicBounds(iconRes, 0, 0, 0)
     }
@@ -420,4 +431,4 @@ abstract class LoadableFragment(baseUrl: String? = null, val app: LoadableApp? =
             }
         }
     }
-}
+}*/

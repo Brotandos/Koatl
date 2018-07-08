@@ -41,58 +41,6 @@ fun anim(resId: Int): RecyclerView.() -> Unit = {
 }
 
 
-fun <E> RecyclerView.forEachOf (
-        items: List<E>,
-        handleLayoutParams: ViewGroup.LayoutParams.() -> Unit = row,
-        holderView: KoatlContext<ViewGroup>.(E, Int) -> Unit
-): RecyclerView {
-    adapter = object : RecyclerView.Adapter<KoatlViewHolder<E>>() {
-        override fun getItemCount() = items.size
-
-        override fun onCreateViewHolder(parent: ViewGroup, itemViewType: Int)
-        = KoatlViewHolder(FrameLayout(parent.context), parent, holderView, handleLayoutParams)
-
-        override fun onBindViewHolder(holder: KoatlViewHolder<E>, position: Int)
-        = holder.bind(items[holder.adapterPosition], holder.adapterPosition)
-    }
-    return this
-}
-
-
-fun <E> adapterFor (
-        items: List<E>,
-        handleItemViewLayoutParams: ViewGroup.LayoutParams.() -> Unit,
-        holderView: KoatlContext<ViewGroup>.(E, Int) -> Unit
-) = object : RecyclerView.Adapter<KoatlViewHolder<E>>() {
-    override fun getItemCount() = items.size
-
-    override fun onCreateViewHolder(parent: ViewGroup, itemViewType: Int)
-    = KoatlViewHolder(FrameLayout(parent.context), parent, holderView, handleItemViewLayoutParams)
-
-    override fun onBindViewHolder(holder: KoatlViewHolder<E>, position: Int)
-    = holder.bind(items[holder.adapterPosition], holder.adapterPosition)
-}
-
-
-class KoatlViewHolder<in E> (
-        val vItem: FrameLayout,
-        private val parent: ViewGroup,
-        private val holderViewMarkup: KoatlContext<ViewGroup>.(E, Int) -> Unit,
-        handleItemViewLayoutParams: ViewGroup.LayoutParams.() -> Unit
-): RecyclerView.ViewHolder(vItem) {
-    init {
-        vItem.layoutParams = ViewGroup.LayoutParams(wrapContent, wrapContent)
-        vItem.layoutParams.handleItemViewLayoutParams()
-    }
-
-    fun bind(item: E, position: Int) {
-        val koatl = KoatlContextImpl(parent.context, parent, false)
-                .apply { holderViewMarkup(item, position) }
-        vItem.addView(koatl.view)
-    }
-}
-
-
 class GridList : RecyclerView {
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
