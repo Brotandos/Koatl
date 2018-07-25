@@ -1,10 +1,14 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
+ext {
+    support_version = '27.1.1'
+    anko_version = '0.10.5'
+    retrofit_version = '2.3.0'
+}
+
 android {
     compileSdkVersion 27
-
-
 
     defaultConfig {
         minSdkVersion 17

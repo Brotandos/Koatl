@@ -37,3 +37,19 @@ inline operator fun <E: View> List<E>.times(block: E.() -> Unit) = forEach { it 
 
 
 inline operator fun <E: View> Sequence<E>.times(block: E.() -> Unit) = forEach { it * block }
+
+
+inline operator fun <T: View> T.invoke(init: T.() -> Unit): T {
+    this.init()
+    return this
+}
+
+inline fun <T: View> T.params(init: T.() -> Unit): T {
+    this.init()
+    return this
+}
+
+inline infix fun <T: View> T.style(init: T.() -> Unit): T {
+    this.init()
+    return this
+}

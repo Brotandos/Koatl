@@ -578,27 +578,6 @@ open class KoatlRelative(ctx: Context) : _RelativeLayout(ctx) {
         marginEnd = c
     }
 
-    @Deprecated("Use get function instead")
-    fun <T: View> T.lp(vararg params: RelativeLayout.LayoutParams.() -> Unit) : T {
-        layoutParams = RelativeLayout.LayoutParams(wrapContent, wrapContent).apply {
-            for (param in params) param()
-        }
-        return this
-    }
-
-    @Deprecated("Use get function instead")
-    fun <T: View> T.lp (
-            vararg params: RelativeLayout.LayoutParams.() -> Unit,
-            init: RelativeLayout.LayoutParams.() -> Unit
-    ) : T {
-        layoutParams = RelativeLayout.LayoutParams(wrapContent, wrapContent).apply {
-            for (param in params) param()
-            init()
-        }
-        return this
-    }
-
-
     operator fun <T: View> T.get (
             vararg params: RelativeLayout.LayoutParams.() -> Unit
     ): T {
@@ -685,6 +664,7 @@ open class KoatlDrawer (ctx: Context): _DrawerLayout(ctx) {
         get() = { gravity = Gravity.END }
     inline val g789: DrawerLayout.LayoutParams.() -> Unit
         get() = { gravity = Gravity.BOTTOM }
+
     inline val submissive: DrawerLayout.LayoutParams.() -> Unit
         get() = { width = wrapContent; height = wrapContent }
     inline val row: DrawerLayout.LayoutParams.() -> Unit
@@ -693,6 +673,8 @@ open class KoatlDrawer (ctx: Context): _DrawerLayout(ctx) {
         get() = { width = wrapContent; height = matchParent }
     inline val dominant: DrawerLayout.LayoutParams.() -> Unit
         get() = { width = matchParent; height = matchParent }
+    inline val Int.slider: DrawerLayout.LayoutParams.() -> Unit
+        get() = { height = matchParent; gravity = this@slider }
 
     /**
      * Margin setting functions
@@ -735,31 +717,6 @@ open class KoatlDrawer (ctx: Context): _DrawerLayout(ctx) {
     fun end(c: Int): DrawerLayout.LayoutParams.() -> Unit = {
         marginEnd = c
     }
-
-    @Deprecated("Use get function instead")
-    fun <T: View> T.lp(vararg params: DrawerLayout.LayoutParams.() -> Unit) : T {
-        layoutParams = DrawerLayout.LayoutParams(wrapContent, wrapContent).apply {
-            for (param in params) param()
-        }
-        return this
-    }
-
-    /**
-     * You will able to write functions like this (just example):
-     * `lp(row) { margin = dip(10) }` instead of this `lp(row, { margin = dip(10) })`
-     * */
-    @Deprecated("Use get function instead")
-    fun <T: View> T.lp (
-            vararg params: DrawerLayout.LayoutParams.() -> Unit,
-            init: DrawerLayout.LayoutParams.() -> Unit
-    ): T {
-        layoutParams = DrawerLayout.LayoutParams(wrapContent, wrapContent).apply {
-            for (param in params) param()
-            init()
-        }
-        return this
-    }
-
 
     operator fun <T: View> T.get (
             vararg params: DrawerLayout.LayoutParams.() -> Unit

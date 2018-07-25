@@ -421,6 +421,10 @@ fun ViewManager.vTable (
 }
 
 
+fun ViewManager.vDrawer (init: (@AnkoViewDslMarker KoatlDrawer).() -> Unit): android.support.v4.widget.DrawerLayout
+        = ankoView({ KoatlDrawer(it) }, 0) { init() }
+
+
 fun ViewManager.vRadioGroup (
         vararg initializations: (@AnkoViewDslMarker android.widget.RadioGroup).() -> Unit
 ): android.widget.RadioGroup = ankoView({ android.widget.RadioGroup(it) }, 0) {
@@ -507,6 +511,12 @@ fun ViewManager.vGridList (
     layoutManager = android.support.v7.widget.GridLayoutManager(context, spanCount)
     initializations.forEach { it() }
     additionalInit()
+}
+
+fun ViewManager.vNavSelector (
+        vararg inits: (@AnkoViewDslMarker BottomNavigationViewEx).() -> Unit
+) : BottomNavigationViewEx = ankoView({ BottomNavigationViewEx(it) }, 0) {
+    inits.forEach { it() }
 }
 
 fun ViewManager.vNavSelector (
