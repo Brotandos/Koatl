@@ -184,19 +184,14 @@ fun <T: View> T.lp(width: Int, height: Int): T {
     return this
 }
 
-@Deprecated("Use get function instead")
-fun <T: View> T.lp(init: ViewGroup.LayoutParams.() -> Unit): T {
-    this.layoutParams.init()
-    return this
-}
-
 operator fun <T: View> T.get(width: Int, height: Int): T {
     this.layoutParams = ViewGroup.LayoutParams(width, height)
     return this
 }
 
 operator fun <T: View> T.get(init: ViewGroup.LayoutParams.() -> Unit): T {
-    this.layoutParams.init()
+    if (layoutParams == null) layoutParams = ViewGroup.LayoutParams(wrapContent, wrapContent)
+    layoutParams.init()
     return this
 }
 
